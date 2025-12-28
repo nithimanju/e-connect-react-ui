@@ -1,24 +1,30 @@
-import logo from './logo.svg';
+import { useContext, useEffect } from 'react';
 import './App.css';
+import CategoryHeader from './category/CategoryHeader';
+import CircularProgressSpinner from './components/ProgressSpinner';
+import Header from './header/Header';
+import Divider from '@mui/material/Divider';
+import { ApplicationContext } from './ApplicationContext';
+import AlertComponent from './components/AlertComponent';
 
 function App() {
+  const {displayLoadingSpinner, setLanguage} = useContext(ApplicationContext);
+  useEffect(() => {
+    const selectedLanguage = {
+      languageId: 1,
+      languageCode: 'en'
+    }
+    setLanguage(selectedLanguage);
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header />
+      <Divider component="li" sx={{ height: 3, backgroundColor: "#F77793" }} />
+      <CategoryHeader />
+      <Divider component="li" sx={{ height: 2, backgroundColor: "#F77793" }} />
+      <CircularProgressSpinner displayLoadingSpinner={displayLoadingSpinner} />
+      <AlertComponent />
+    </>
   );
 }
 
