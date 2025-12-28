@@ -64,14 +64,15 @@ export default function CategoryDetail(props) {
   const [categoryListLoading, setCategoryListLoading] = useState(true);
   const [searchList, setSearchList] = useState([]);
   const [searchCount, setSearchCount] = useState(0);
-  const [searchFilters, setSearchFilters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [value, setValue] = useState(0);
   const [categoryDescValue, setCategoryDescValue] = useState(0);
   const [categoryListValue, setCategoryListValue] = useState(0);
   const [categoryItemValue, setCategoryItemValue] = useState(0);
   const [hasMoreCategories, setHasMoreCategories] = useState(false);
+  const [hasMoreItems, setHasMoreItems] = useState(false);
   const [categoryFrom, setCategoryFrom] = useState(0);
+  const [itemFrom, setItemFrom] = useState(0);
 
   const fetchChildCategoryList = async () => {
     let data = await apiCall(`part-service/child-hierarchy/parent-id?categoryId=${queryCategoryId}&from=${categoryFrom}&size=8`);
@@ -88,6 +89,33 @@ export default function CategoryDetail(props) {
     }
     setCategoryListLoading(false);
   };
+  const fetchItemList = async () => {
+    let url = "search/api/item/v1/list";
+
+    const dataToSend = {
+      languageCode: "en",
+      from: itemFrom,
+      size: 20,
+      categoryIds: queryCategoryId ? [queryCategoryId] : [],
+      brandIds: brandIds ? [brandIds] : []
+    };
+
+    const data = await apiCall(url, 'POST', JSON.stringify(dataToSend));
+    if (data) {
+      const dataResponse = JSON.parse(data);
+      if (dataResponse.itemSearchResponses.length > 0) {
+        setSearchList(prev => [...prev, ...dataResponse.itemSearchResponses]);
+        setSearchCount(prev => prev + dataResponse.count);
+        setItemFrom(prev => prev + 20);
+        setHasMoreItems(true);
+      } else {
+        setHasMoreItems(false);
+      }
+    } else {
+      setHasMoreItems(false);
+    }
+    setLoading(false);
+  }
 
   useEffect(() => {
     async function fetchCategoryDetail() {
@@ -101,42 +129,13 @@ export default function CategoryDetail(props) {
       }
     };
 
-    async function fetchData() {
-      let url = "search/api/item/v1/list";
-
-      const dataToSend = {
-        languageCode: "en",
-        from: 0,
-        size: 20,
-        categoryIds: queryCategoryId ? [queryCategoryId] : [],
-        brandIds: brandIds ? [brandIds] : []
-      };
-
-      try {
-        const data = await apiCall(url, 'POST', JSON.stringify(dataToSend));
-        if (data) {
-          const dataResponse = JSON.parse(data);
-          setSearchCount(dataResponse.count);
-          setSearchList(dataResponse.itemSearchResponses);
-          setLoading(false);
-          setSearchFilters(dataResponse.itemSearchFilterResponses);
-        } else {
-          setSearchCount(0);
-          setSearchList([]);
-          setLoading(false);
-          setSearchFilters([]);
-        }
-      } catch (err) {
-        console.error("Error:", err);
-      }
-    }
     if (queryCategoryId && queryCategoryId !== 0) {
       fetchCategoryDetail();
     }
     setCategoryFrom(0);
     setCategoryList([]);
     fetchChildCategoryList();
-    fetchData();
+    fetchItemList();
   }, [queryCategoryId]);
 
   const handleChange = (event, newValue) => {
@@ -187,40 +186,29 @@ export default function CategoryDetail(props) {
             </InfiniteScroll>
           </TabPanel>
         }
-        {loading ?
-          (Array.from({ length: 8 }).map((_, i) => (
-            <Grid size={{ xs: 6, sm: 4, md: 3 }} key={i}>
-              <Skeleton variant="rectangular" height={400} />
-            </Grid>
-          )))
-          :
-          (
-            searchList.length > 0 &&
-            (
-              <Box px={1}>
-                <Divider />
-                <Typography sx={{
-                  fontSize: "clamp(0.7rem, 1.5vw, 1.9rem)",
-                  flexWrap: "wrap",
-                  overflow: "hidden",
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
-                  textOverflow: "ellipsis",
-                  fontFamily: "Amazon Ember, Arial, sans-serif",
-                  padding: 2
-                }}><strong>Items</strong></Typography>
-                <Grid size={{ xs: 12, sm: 12, md: 9.5 }} container spacing={1}>
-
-                  {searchList.map((item, index) => (
-                    <Grid key={index} size={{ xs: 4, sm: 2, md: 2 }} sx={{ minWidth: 0 }}>
-                      <SearchedItem borderRadius={2} itemDetail={item} />
-                    </Grid>
-                  ))}
-                </Grid>
-              </Box>
-            )
-          )
+        {!loading && searchList &&
+          searchList.length > 0 &&
+          <TabPanel value={value} index={categoryItemValue}>
+            <InfiniteScroll
+              dataLength={searchList.length}
+              next={fetchItemList}
+              hasMore={hasMoreItems}
+              loader={(Array.from({ length: 8 }).map((_, i) => (
+                <>
+                  <Skeleton key={i} style={{ marginBottom: "4px" }} variant="rectangular" height={50} />
+                  <Divider />
+                </>
+              )))}
+            >
+              <Grid my={3} px={1} size={{ xs: 12, sm: 12, md: 9.5 }} container spacing={1}>
+                {searchList.map((item, index) => (
+                  <Grid key={index} size={{ xs: 4, sm: 2, md: 2 }} sx={{ minWidth: 0 }}>
+                    <SearchedItem borderRadius={2} itemDetail={item} />
+                  </Grid>
+                ))}
+              </Grid>
+            </InfiniteScroll>
+          </TabPanel>
         }
 
         {categoryDetail &&
