@@ -62,7 +62,6 @@ export default function BrandDetailPage() {
     const [brandListLoading, setBrandListLoading] = useState(true);
     const queryBrandId = searchParams.get('brandId') ? searchParams.get('brandId') : 0;
     const [brandFrom, setBrandFrom] = useState(0);
-    const [totalMaxPages, setTotalMaxPages] = useState(0);
     const [value, setValue] = useState(0);
     const [brandDescValue, setBrandDescValue] = useState(0);
     const [brandCategoryValue, setBrandCategoryValue] = useState(0);
@@ -178,7 +177,6 @@ export default function BrandDetailPage() {
                                         </Grid>
                                     )}</Grid>
                             </InfiniteScroll>
-
                         </TabPanel>
                     }
                 </Paper>
