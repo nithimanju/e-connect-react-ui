@@ -13,7 +13,6 @@ export default function OrderListPage() {
   const [totalMaxPages, setTotalMaxPages] = useState(0);
 
   const handleScroll = useCallback(() => {
-    console.log('scrolled to bottom', window.innerHeight,
       document.documentElement.scrollTop,
       document.documentElement.offsetHeight - 1, orderFrom, totalMaxPages);
     if (
@@ -25,7 +24,6 @@ export default function OrderListPage() {
     }
   }, [orderFrom, totalMaxPages]);
   useEffect(() => {
-    console.log('scrolled to Use Callback');
     window.addEventListener('scroll', handleScroll);
     return () =>
       window.removeEventListener('scroll', handleScroll);
@@ -37,7 +35,6 @@ export default function OrderListPage() {
         from: orderFrom,
         size: 10
       }
-      console.log("Languag is inside fetch", language.languageId);
       let responseData = await apiCall(`/order-service/order-list?languageId=${language.languageId}`, 'POST', data);
       if (data) {
         setOrderList(JSON.parse(responseData));

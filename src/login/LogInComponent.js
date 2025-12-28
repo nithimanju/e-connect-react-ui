@@ -58,10 +58,6 @@ export default function LogInComponent(props) {
             return;
         }
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
         const userData = {
             username: data.get('email'),
             password: data.get('password'),
