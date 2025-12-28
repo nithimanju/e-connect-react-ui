@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -10,39 +10,40 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import ItemDetailPage from './ItemDetail/ItemDetailPage';
 import CartPage from './cart/CartPage';
 import LogInComponent from './login/LogInComponent';
-import {ApplicationContextProvider} from './ApplicationContext';
-import { CircularProgress } from '@mui/material';
-import CircularProgressSpinner from './components/ProgressSpinner';
+import { ApplicationContextProvider } from './ApplicationContext';
+import { Box } from '@mui/material';
 import OrderDetailPage from './order/OrderDetailPage';
 import OrderConfirmationPage from './order/OrderConfirmationPage';
 import SignUpPage from './login/SignUpPage';
 import UserProfile from './login/UserProfile';
 import OrderListPage from './order/OrderListPage';
+import BrandDetailPage from './brand/BrandDetailPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-
     <BrowserRouter>
       <ApplicationContextProvider>
         <App />
-      <Routes>
-        <Route path="/" element={<BannerCarousel />} />
-        <Route path="/search-results" element={<SearchResult />} />
-        <Route path="/category-detail" element={<CategoryDetail />} />
-        <Route path="/item-detail" element={<ItemDetailPage />} />
-        <Route path="/cart" element={<CartPage />} />
-        <Route path='/login' element={<LogInComponent />} />
-        <Route path='/order-detail' element={<OrderDetailPage />} />
-        <Route path='/order-confirmation' element={<OrderConfirmationPage />} />
-        <Route path='/signUp' element={<SignUpPage />} />
-        <Route path='/user-profile' element={<UserProfile />} />
-        <Route path='/my-orders' element={<OrderListPage />} />
-      </Routes>
-            </ApplicationContextProvider>
+        <Box sx={{ minHeight: '100vh' }}>
+          <Routes>
+            <Route path="/" element={<BannerCarousel />} />
+            <Route path="/search-results" element={<SearchResult />} />
+            <Route path="/category-detail" element={<CategoryDetail />} />
+            <Route path="/item-detail" element={<ItemDetailPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path='/login' element={<LogInComponent />} />
+            <Route path='/order-detail' element={<OrderDetailPage />} />
+            <Route path='/order-confirmation' element={<OrderConfirmationPage />} />
+            <Route path='/signUp' element={<SignUpPage />} />
+            <Route path='/user-profile' element={<UserProfile />} />
+            <Route path='/my-orders' element={<OrderListPage />} />
+            <Route path='/brand-details' element={<BrandDetailPage />} />
+          </Routes>
+        </Box>
+      </ApplicationContextProvider>
     </BrowserRouter>
-
   </React.StrictMode >
 );
 

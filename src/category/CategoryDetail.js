@@ -1,4 +1,4 @@
-import { Box, Container, Divider, Grid, Paper, Skeleton, Typography } from "@mui/material";
+import { Box, Divider, Grid, Paper, Skeleton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import apiCall from "../HTTPRequest";
 import { useSearchParams } from "react-router-dom";
@@ -8,6 +8,7 @@ import SearchedItem from "../search/SearchedItem";
 export default function CategoryDetail(props) {
   const [searchParams] = useSearchParams();
   const queryCategoryId = searchParams.get('categoryId');
+  const brandIds = searchParams.get('brandIds');
   const [categoryDetail, setCategoryDetail] = useState(null);
   const [categoryList, setCategoryList] = useState(null);
   const [categoryDetailLoading, setCategoryDetailLoading] = useState(true);
@@ -44,7 +45,8 @@ export default function CategoryDetail(props) {
         languageCode: "en",
         from: 0,
         size: 20,
-        categoryIds: queryCategoryId ? [queryCategoryId] : []
+        categoryIds: queryCategoryId ? [queryCategoryId] : [],
+        brandIds: brandIds? [brandIds] : []
       };
 
       try {
@@ -65,7 +67,9 @@ export default function CategoryDetail(props) {
         console.error("Error:", err);
       }
     }
-    fetchCategoryDetail();
+    if (queryCategoryId && queryCategoryId !== 0) {
+      fetchCategoryDetail();
+    }
     fetchChildCategoryList();
     fetchData();
   }, [queryCategoryId]);
@@ -88,8 +92,8 @@ export default function CategoryDetail(props) {
         <Grid my={3} px={1} container >
           {!categoryListLoading && categoryList && categoryList?.map((category, index) => {
             return (
-              <Grid size={{ xs: 6, sm: 4, md: 3 }} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                <CategoryCard key={index} categoryId={category.categoryId} categoryName={category.categoryNames["en"]} mediaPath={category.categoryMedias[0].mediaPath} />
+              <Grid size={{ xs: 6, sm: 4, md: 3 }} px={2} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  <CategoryCard key={index} name={category.categoryNames["en"]} mediaPath={category.categoryMedias[0].mediaPath} to={`/category-detail?categoryId=${category.categoryId}&brandIds=${brandIds}`} />
               </Grid>
             )
           })
@@ -125,7 +129,6 @@ export default function CategoryDetail(props) {
                           <SearchedItem borderRadius={2} itemDetail={item} />
                         </Grid>
                       ))}
-
                     </Grid>
                   </Box>
                 )

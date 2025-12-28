@@ -13,8 +13,6 @@ export default function OrderListPage() {
   const [totalMaxPages, setTotalMaxPages] = useState(0);
 
   const handleScroll = useCallback(() => {
-      document.documentElement.scrollTop,
-      document.documentElement.offsetHeight - 1, orderFrom, totalMaxPages);
     if (
       window.innerHeight +
       document.documentElement.scrollTop >=
