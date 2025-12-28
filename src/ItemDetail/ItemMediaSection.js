@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 export default function ItemMediaSection(props) {
   const mediaPaths = props.mediaPaths;
   const [highLightMedia, setHighLightMedia] = useState({});
-  console.log("Came to Item Media");
   useEffect(() => {
     if(mediaPaths) {
       setHighLightMedia(mediaPaths[0].mediaPath);

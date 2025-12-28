@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 export default function HeaderLoginProfile() {
   const [loginVisibilityStatus, setLoginVisibilityStatus] = useState(false);
   const setLoginVisibility = useCallback((boolValue) => {
-    console.log(boolValue);
     setLoginVisibilityStatus(boolValue);
   }, []);
   const {isLoggedIn, setIsloggedIn} = useContext(ApplicationContext);

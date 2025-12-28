@@ -9,7 +9,6 @@ export default function ItemInfoSection(props) {
   const descriptions = itemDetail.itemDescriptions?.['en'];
   const theme = useTheme();
   const isMobileOrTablet = useMediaQuery(theme.breakpoints.down('md'));
-  console.log("Came to Item Info");
   return (
     <Box>
       <Typography variant="h5" fontWeight={600}>

@@ -62,7 +62,6 @@ function SearchSuggestionTemplate(props) {
       setTotalSearchSuggestions(searchResults);
       localStorage.setItem(`last-search-key-values-${queryString}`, JSON.stringify(searchResults));
       setSearchSuggestions(searchResults.slice(0, 10) || []);
-      console.log('Success:', data);
     } catch (error) {
       console.error('Error fetching search suggestions:', error);
     }

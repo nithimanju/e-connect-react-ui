@@ -11,11 +11,9 @@ export default function OrderDetailPage() {
   const [orderDetails, setOrderDetails] = useState(null);
   const [isOrderLoading, setIsOrderLoading] = useState(true);
   const [searchParameters] = useSearchParams();
-  console.log("Languag is ",language.languageId);
   const orderId = searchParameters.get('orderId');
   useEffect(() => {
     async function fetchOrderDetails() {
-      console.log("Languag is inside fetch",language.languageId);
       let data = await apiCall(`/order-service/order?languageId=${language.languageId}&orderId=${orderId}`);
       if (data) {
         setOrderDetails(JSON.parse(data));

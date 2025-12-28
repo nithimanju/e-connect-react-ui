@@ -49,10 +49,6 @@ export default function SignUpPage() {
       return;
     }
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('sign-up-email'),
-      password: data.get('sign-up-password'),
-    });
     const address = {
       isPrimary: true,
       street: data.get('sign-up-street'),
