@@ -29,6 +29,8 @@ export default function Header() {
   const [loginVisibilityStatus, setLoginVisibilityStatus] = useState(false);
   const [cartDetail, setCartDetail] = useState({});
   const [cartItemCount, setCartItemCount] = useState(0);
+  const [menuItems, setMenuItems] = useState([]);
+
   const navigate = useNavigate();
   const { setCartId, setDisplayLoadingSpinner, setDisplayAlterMessage, setIsDisplayAlterMessage, isLoggedIn, setIsloggedIn } = useContext(ApplicationContext);
   const handleOnClickTooggleOptionDrawer = useCallback((boolValue) => {
@@ -63,14 +65,18 @@ export default function Header() {
     fetchcartDetails();
   }, [])
 
-  var address = [{
-    "addressName": "Nithin Manjunath, Tipture",
-    "addressId": 1
-  },
-  {
-    "addressName": "Address2",
-    "addressId": 2
-  }];
+  useEffect(() => {
+    async function fetchMenuItems() {
+      let data = await apiCall(`/user-service/get?languageId=1`);
+      if (data) {
+        const responseData = JSON.parse(data);
+        setMenuItems(responseData);
+      } else {
+        setMenuItems([]);
+      }
+    };
+    fetchMenuItems();
+  }, [isLoggedIn]);
 
   return (
     <>
@@ -165,24 +171,14 @@ export default function Header() {
           <List>
             <Typography mx={2} variant="h3" sx={{ fontSize: { xs: 20, md: 25 }, marginTop: 0.5 }}>Hello Users!
             </Typography>
-            {['Shop by Category', 'Shop by Brand', 'Shop by Dealers'].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemText primary={text} />
+            {menuItems && menuItems.length > 0 && menuItems.map((item, index) => (
+              <ListItem key={index} disablePadding>
+                <ListItemButton onClick={() => navigate(item.menuPath)}>
+                  <ListItemText primary={item.menuName} />
                 </ListItemButton>
               </ListItem>
             ))}
-          </List>
-          <Divider />
-          <List>
-            {['My Orders', 'Notifications', 'About'].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
+            </List>
           <Divider />
           <List>
             <ListItem disablePadding>
