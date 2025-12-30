@@ -1,11 +1,10 @@
 import { useSearchParams } from 'react-router-dom';
-import { createContext, useEffect, useState } from "react";
-import apiCall from '../HTTPRequest';
-import SearchedItem from './SearchedItem';
+import { createContext, useState } from "react";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import SearchFilterItem from './SearchFilterItem';
 import { Card, Divider, Skeleton, Stack, Typography } from '@mui/material';
+import ScrollableSearchItem from './SearchItem';
 
 const SearchItemContext = createContext();
 function SearchResult() {
@@ -17,33 +16,6 @@ function SearchResult() {
   const [loading, setLoading] = useState(true);
   const [selectedFilters, setSelectedFilters] = useState({});
   const [selectedFilterMap, setSelectedFilterMap] = useState(new Map());
-
-  useEffect(() => {
-    async function fetchData() {
-      let url = "search/api/item/v1/list";
-
-      const dataToSend = {
-        queryString: searchQuery,
-        languageCode: "en",
-        from: 0,
-        size: 20,
-        filterValues: Object.fromEntries(selectedFilterMap)
-      };
-
-      try {
-        const data = await apiCall(url, 'POST',JSON.stringify(dataToSend));
-        const dataResponse = JSON.parse(data);
-        setSearchCount(dataResponse.count);
-        setSearchList(dataResponse.itemSearchResponses);
-        setLoading(false);
-        setSearchFilters(dataResponse.itemSearchFilterResponses);
-      } catch (err) {
-        console.error("Error:", err);
-      }
-    }
-
-    fetchData();
-  }, [searchQuery, selectedFilterMap]);
 
   return (
     <SearchItemContext.Provider value={{ selectedFilterMap, setSelectedFilterMap }}>
@@ -91,23 +63,8 @@ function SearchResult() {
             </Grid>
           )
           }
-          <Grid size={{ xs: 12, sm: 12, md: 9.5 }} container spacing={2}>
-            {loading ?
-              Array.from({ length: 8 }).map((_, i) => (
-                <Grid size={{ xs: 6, sm: 4, md: 3 }} key={i}>
-                  <Skeleton variant="rectangular" height={400} />
-                </Grid>
-              ))
-              :
-              (searchList && searchList.length > 0 ? (
-                searchList.map((item, index) => (
-                  <Grid key={index} size={{ xs: 4, sm: 2, md: 2 }} sx={{ minWidth: 0 }}>
-                    <SearchedItem borderRadius={2} itemDetail={item} />
-                  </Grid>
-                ))
-              ) : (
-                <div>No items found</div>
-              ))}
+          <Grid my={3} px={1} size={{ xs: 12, sm: 12, md: 9.5 }} container>
+          <ScrollableSearchItem searchQuery={searchQuery} searchList={searchList} setSearchList={setSearchList} searchCount={searchCount} setSearchCount={setSearchCount} queryCategoryId={null} brandIds={null} selectedFilterMap={selectedFilterMap} setSearchFilters={setSearchFilters} setLoading={setLoading}  />
           </Grid>
         </Grid>
       </Box>
