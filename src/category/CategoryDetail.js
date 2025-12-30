@@ -97,7 +97,7 @@ export default function CategoryDetail(props) {
       from: itemFrom,
       size: 20,
       categoryIds: queryCategoryId ? [queryCategoryId] : [],
-      brandIds: brandIds ? [brandIds] : []
+      brandIds: brandIds && brandIds !== 'null' ? [brandIds] : []
     };
 
     const data = await apiCall(url, 'POST', JSON.stringify(dataToSend));
@@ -134,6 +134,9 @@ export default function CategoryDetail(props) {
     }
     setCategoryFrom(0);
     setCategoryList([]);
+    setSearchList([]);
+    setItemFrom(0);
+    setValue(0);
     fetchChildCategoryList();
     fetchItemList();
   }, [queryCategoryId]);
@@ -144,7 +147,7 @@ export default function CategoryDetail(props) {
 
   return (
     <Box display="flex" mx={{ xs: 1, sm: 6, md: 10 }} sx={{ justifyContent: "center" }}>
-      <Paper sx={{ boxShadow: "0px 2px 2px -1px rgba(167, 250, 232, 1),0px 1px 2px 1px rgba(167, 250, 232, 1),1px 1px 3px 0px rgba(167, 250, 232, 0.5)", borderRadius: "5px !important", margin: "10px", width: "clamp(30px, 90vw, 1200px)" }}>
+      <Paper sx={{ minHeight:'90vh', boxShadow: "0px 2px 2px -1px rgba(167, 250, 232, 1),0px 1px 2px 1px rgba(167, 250, 232, 1),1px 1px 3px 0px rgba(167, 250, 232, 0.5)", borderRadius: "5px !important", margin: "10px", width: "clamp(30px, 90vw, 1200px)" }}>
         <Typography sx={{
           fontSize: "clamp(0.7rem, 1.5vw, 1.9rem)",
           flexWrap: "wrap",
