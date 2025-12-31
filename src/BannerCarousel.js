@@ -1,25 +1,22 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Box, IconButton } from "@mui/material";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
-
-const images = [
-  "https://c8.alamy.com/comp/HJDWB6/famous-indian-city-road-landmark-chowringhee-dharamtala-crossing-kolkata-HJDWB6.jpg",  // slide 1
-  "https://media.istockphoto.com/id/1382384282/photo/bangalore-or-bengaluru.jpg?s=612x612&w=0&k=20&c=6pxwL3JxNV2B_NZSLMZLhrSLqAbyCPlGuSZYKImpjKQ=",  // slide 2
-  "https://www.shutterstock.com/image-photo/view-mumbai-showing-bandra-worli-260nw-1493970836.jpg",  // slide 3
-];
+import apiCall from "./HTTPRequest";
+import { useNavigate } from "react-router-dom";
 
 export default function BannerCarousel() {
   const containerRef = useRef(null);
   const [index, setIndex] = useState(0);
-
+  const [promotions, setPromotions] = useState([]);
+  const navigate = useNavigate();
   const nextSlide = () => {
-    const newIndex = (index + 1) % images.length;
+    const newIndex = (index + 1) % promotions?.length;
     setIndex(newIndex);
     scrollToIndex(newIndex);
   };
 
   const prevSlide = () => {
-    const newIndex = (index - 1 + images.length) % images.length;
+    const newIndex = (index - 1 + promotions?.length) % promotions?.length;
     setIndex(newIndex);
     scrollToIndex(newIndex);
   };
@@ -38,6 +35,21 @@ export default function BannerCarousel() {
     return () => clearInterval(interval);
   });
 
+  useEffect(() => {
+    async function fetchPromotions() {
+      const promotionType = 'home';
+      const data = await apiCall(`part-service/promotion/get?promotionType=${promotionType}&languageId=1`);
+      if (data) {
+        const responses = JSON.parse(data);
+        if (responses && responses.length > 0) {
+          setPromotions(responses);
+        }
+      }
+    };
+    setPromotions([]);
+    fetchPromotions();
+  }, []);
+
   return (
     <>
       <Box sx={{ position: "relative", width: "100%", overflow: "hidden" }}>
@@ -50,18 +62,20 @@ export default function BannerCarousel() {
             overflowX: "hidden",
           }}
         >
-          {images.map((src, idx) => (
-            <Box
-              key={idx}
-              component="img"
-              src={src}
-              sx={{
-                width: "100%",
-                height: { xs: 200, md: 250, lg: 300 },
-                objectFit: "cover",
-                flexShrink: 0,
-              }}
-            />
+          {promotions.map((promotion, idx) => (
+              <Box
+		key={idx}
+                component="img"
+		onClick={() => navigate(promotion.promotionPath)}
+                src={promotion.mediaPath}
+                alt={promotion.promotionName}
+                sx={{
+                  width: "100%",
+                  height: { xs: 200, md: 250, lg: 300 },
+                  objectFit: "cover",
+                  flexShrink: 0,
+                }}
+              />
           ))}
         </Box>
 
